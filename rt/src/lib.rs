@@ -1,4 +1,3 @@
-#![no_main]
 #![no_std]
 
 use core::panic::PanicInfo;
@@ -10,10 +9,11 @@ fn panic(_panic: &PanicInfo<'_>) -> ! {
 
 #[no_mangle]
 pub unsafe extern "C" fn Reset() -> ! {
-    let _x = 42;
+    extern "Rust" {
+        fn main() -> !;
+    }
 
-    // Can't return so we go into infinite loop here
-    loop {}
+    main()
 }
 
 // The reset vector. Pointer into the reset handler
