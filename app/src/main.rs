@@ -3,8 +3,11 @@
 
 extern crate rt;
 
-#[no_mangle]
-pub fn main() -> !{
+use rt::entry;
+
+entry!(main);
+
+pub fn main() -> ! {
     let _x = 42;
 
     loop {}

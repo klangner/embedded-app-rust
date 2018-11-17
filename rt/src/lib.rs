@@ -2,6 +2,18 @@
 
 use core::panic::PanicInfo;
 
+#[macro_export]
+macro_rules! entry {
+    ($path: path) => {
+        #[export_name = "main"]
+        pub unsafe fn __main() -> ! {
+            // type check the given path
+            let f: fn() -> ! = $path;
+            f()
+        }
+    };
+}
+
 #[panic_handler]
 fn panic(_panic: &PanicInfo<'_>) -> ! {
     loop {}
