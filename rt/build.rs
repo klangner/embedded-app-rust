@@ -1,4 +1,5 @@
 use std::{env, error::Error, fs::File, io::Write, path::PathBuf};
+use cc::Build;
 
 fn main() -> Result<(), Box<Error>> {
     // build directory for this crate
@@ -9,6 +10,9 @@ fn main() -> Result<(), Box<Error>> {
 
     // Put 'link.x' in the build directory
     File::create(out_dir.join("link.x"))?.write_all(include_bytes!("link.x"))?;
+
+    // assemble the `asm.s` file
+    Build::new().file("asm.s").compile("asm"); 
 
     Ok(())
 }
