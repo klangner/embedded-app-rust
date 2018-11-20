@@ -1,20 +1,37 @@
-#![feature(core_intrinsics)]
-#![no_std]
 #![no_main]
+#![no_std]
 
-use core::intrinsics;
+use cortex_m_semihosting::{
+    debug,
+    hio::{self, HStdout},
+};
+
+use log::{log, Log};
 use rt::entry;
+
+struct Logger {
+    hstdout: HStdout,
+}
+
+impl Log for Logger {
+    type Error = ();
+
+    fn log(&mut self, address: u8) -> Result<(), ()> {
+        self.hstdout.write_all(&[address])
+    }
+}
 
 entry!(main);
 
-
 fn main() -> ! {
-    // This will case HardFault exception
-    unsafe { intrinsics::abort() }
-}
+    let hstdout = hio::hstdout().unwrap();
+    let mut logger = Logger { hstdout };
 
-#[allow(non_snake_case)]
-#[no_mangle]
-pub fn HardFault(_ef: *const u32) -> ! {
+    log!(logger, "Hello, world!");
+
+    log!(logger, "Goodbye");
+
+    debug::exit(debug::EXIT_SUCCESS);
+
     loop {}
 }
